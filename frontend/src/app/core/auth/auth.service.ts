@@ -1,40 +1,53 @@
+import { environment } from '../../../env/environment';
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
-import { LoginRequest, RegisterRequest, LoginResponse } from './models/auth.models';
-import { environment } from '../../../env/environment';
-const TOKEN_KEY = 'auth_token';
+import { Observable, tap, catchError, of, map } from 'rxjs';
+import { LoginRequest, RegisterRequest, CurrentUser } from './models/auth.models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  private readonly baseUrl = 'https://localhost:7003/api/auth';
 
-  isLoggedIn = signal<boolean>(!!localStorage.getItem(TOKEN_KEY));
+  isLoggedIn = signal<boolean>(false);
+  currentUser = signal<CurrentUser | null>(null);
 
   constructor(private http: HttpClient) {}
 
-  login(request: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(environment.apiHost + 'auth/login', request).pipe(
-      tap((response) => this.setToken(response.token))
+  login(request: LoginRequest): Observable<void> {
+    return this.http.post<void>( environment.apiHost + `auth/login`, request).pipe(
+      tap(() => this.isLoggedIn.set(true))
     );
   }
 
   register(request: RegisterRequest): Observable<void> {
-    return this.http.post<void>(environment.apiHost + 'auth/register', request);
+    return this.http.post<void>(environment.apiHost + `auth/register`, request).pipe(
+      tap(() => this.isLoggedIn.set(true))
+    );
   }
 
-  logout(): void {
-    localStorage.removeItem(TOKEN_KEY);
-    this.isLoggedIn.set(false);
+  logout(): Observable<void> {
+    return this.http.post<void>(environment.apiHost + `auth/logout`, {}).pipe(
+      tap(() => {
+        this.isLoggedIn.set(false);
+        this.currentUser.set(null);
+      })
+    );
   }
 
-  getToken(): string | null {
-    return localStorage.getItem(TOKEN_KEY);
-  }
-
-  private setToken(token: string): void {
-    localStorage.setItem(TOKEN_KEY, token);
-    this.isLoggedIn.set(true);
+  fetchCurrentUser(): Observable<boolean> {
+    return this.http.get<CurrentUser>(environment.apiHost + `auth/me`).pipe(
+      tap((user) => {
+        this.currentUser.set(user);
+        this.isLoggedIn.set(true);
+      }),
+      map(() => true),
+      catchError(() => {
+        this.isLoggedIn.set(false);
+        this.currentUser.set(null);
+        return of(false);
+      })
+    );
   }
 }

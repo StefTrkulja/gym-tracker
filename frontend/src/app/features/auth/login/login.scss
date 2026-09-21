@@ -1,0 +1,87 @@
+.auth-card {
+  width: 100%;
+  max-width: 520px;  // povećano sa 460px
+  padding: 40px 36px;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.auth-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 28px;
+
+  .icon-badge {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(63, 81, 181, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+
+    mat-icon {
+      color: #3f51b5;
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  h2 {
+    margin: 0 0 6px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #222;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #777;
+  }
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.field-icon {
+  color: #9e9e9e;
+  margin-right: 4px;
+}
+
+.submit-btn {
+  height: 46px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 10px;
+  margin-top: 4px;
+  letter-spacing: 0.3px;
+}
+
+.footer-link {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding-top: 20px;
+  margin-top: 20px;
+  border-top: 1px solid #eee;
+  font-size: 0.9rem;
+  color: #666;
+
+  a {
+    color: #3f51b5;
+    text-decoration: none;
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

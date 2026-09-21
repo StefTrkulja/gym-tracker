@@ -18,7 +18,7 @@ public class AuthService : IAuthService
         _tokenService = tokenService;
     }
 
-    public async Task<UserResponse> RegisterAsync(CreateUserRequest request, CancellationToken cancellationToken)
+    public async Task<LoginResponse> RegisterAsync(CreateUserRequest request, CancellationToken cancellationToken)
     {
         var existingEmail = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
 
@@ -42,7 +42,11 @@ public class AuthService : IAuthService
         };
 
         var created = await _userRepository.CreateAsync(user, cancellationToken);
-        return new UserResponse(created.Id, created.Username, created.Email ,created.FirstName, created.LastName);
+        
+        var token = _tokenService.GenerateToken(created);
+
+        return new LoginResponse(token);
+
     }
 
     public async Task<LoginResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken)

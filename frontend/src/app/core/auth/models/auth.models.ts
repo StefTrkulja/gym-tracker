@@ -11,6 +11,8 @@ export interface RegisterRequest {
   lastName: string;
 }
 
-export interface LoginResponse {
-  token: string;
+export interface CurrentUser {
+  id: string;
+  email: string;
+  username: string;
 }
