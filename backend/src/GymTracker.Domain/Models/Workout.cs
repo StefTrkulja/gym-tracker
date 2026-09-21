@@ -15,6 +15,7 @@ namespace GymTracker.Domain.Models
         public string? Notes { get; set; }
         public required DateTime PerformedAt { get; set; }
 
+
         public int UserId { get; set; }
         public User User { get; set; } = null!;
 
