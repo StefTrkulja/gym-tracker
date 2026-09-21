@@ -1,0 +1,11 @@
+html
+<div class="main-container">
+  <nav class="sidebar">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Dashboard</a>
+    <a routerLink="/workouts" routerLinkActive="active">Treninzi</a>
+    <a routerLink="/progress" routerLinkActive="active">Napredak</a>
+  </nav>
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
