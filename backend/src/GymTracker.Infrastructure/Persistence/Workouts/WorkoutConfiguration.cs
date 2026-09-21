@@ -21,6 +21,7 @@ public class WorkoutConfiguration : IEntityTypeConfiguration<Workout>
 
         builder.HasIndex(w => new { w.UserId, w.PerformedAt });
 
+
         builder.HasOne(w => w.User)
             .WithMany(u => u.Workouts)
             .HasForeignKey(w => w.UserId)
