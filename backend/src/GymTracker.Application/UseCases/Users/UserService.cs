@@ -15,43 +15,42 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public async Task<UserResponse> CreateAsync(CreateUserRequest request, CancellationToken cancellationToken)
-    {
-        var user = new User
-        {
-            Username = request.Username,
-            Email = request.Email,
-            PasswordHashed = BCrypt.Net.BCrypt.HashPassword(request.Password)
-        };
-
-        var created = await _userRepository.CreateAsync(user, cancellationToken);
-        return new UserResponse(created.Id, created.Username, created.Email);
-    }
+    
 
     public async Task<UserResponse> UpdateAsync(UpdateUserRequest request, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetByIdAsync(request.Id, cancellationToken);
         if (user is null) throw new KeyNotFoundException($"User with id {request.Id} not found.");
 
+        if (user.Email != request.Email &&
+            await _userRepository.GetByEmailAsync(request.Email, cancellationToken) is not null)
+            throw new InvalidOperationException("A user with this email already exists.");
+
+        if (user.Username != request.Username &&
+            await _userRepository.GetByUsernameAsync(request.Username, cancellationToken) is not null)
+            throw new InvalidOperationException("A user with this username already exists.");
+
         user.Username = request.Username;
         user.Email = request.Email;
+        user.FirstName = request.FirstName;
+        user.LastName = request.LastName;
 
         var updated = await _userRepository.Update(user, cancellationToken);
-        return new UserResponse(updated.Id, updated.Username, updated.Email);
+        return new UserResponse(updated.Id, updated.Username, updated.Email, updated.FirstName, updated.LastName);
     }
 
     public async Task<UserResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetByIdAsync(id, cancellationToken);
         if (user is null) return null;
-        return new UserResponse(user.Id, user.Username, user.Email);
+        return new UserResponse(user.Id, user.Username, user.Email, user.FirstName, user.LastName);
     }
 
     public async Task<UserResponse?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
         if (user is null) return null;
-        return new UserResponse(user.Id, user.Username, user.Email);
+        return new UserResponse(user.Id, user.Username, user.Email, user.FirstName, user.LastName);
     }
 
 }

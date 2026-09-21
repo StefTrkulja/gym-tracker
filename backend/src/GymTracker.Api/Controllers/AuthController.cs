@@ -2,6 +2,7 @@
 using GymTracker.Application.Contracts.UseCases.Auth;
 using GymTracker.Application.DTOs.Auth;
 using GymTracker.Application.DTOs.Users;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace GymTracker.Api.Controllers;
 

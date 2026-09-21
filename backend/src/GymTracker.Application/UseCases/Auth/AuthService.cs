@@ -20,19 +20,29 @@ public class AuthService : IAuthService
 
     public async Task<UserResponse> RegisterAsync(CreateUserRequest request, CancellationToken cancellationToken)
     {
-        var existing = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
-        if (existing is not null)
+        var existingEmail = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
+
+        var existingUsername = await _userRepository.GetByUsernameAsync(request.Username, cancellationToken);
+
+        if (existingEmail is not null)
             throw new InvalidOperationException("A user with this email already exists.");
+
+        if (existingUsername is not null)
+            throw new InvalidOperationException("A user with this username already exists.");
+
 
         var user = new User
         {
             Username = request.Username,
             Email = request.Email,
-            PasswordHashed = BCrypt.Net.BCrypt.HashPassword(request.Password)
+            PasswordHashed = BCrypt.Net.BCrypt.HashPassword(request.Password),
+            FirstName = request.FirstName,
+            LastName = request.LastName
+
         };
 
         var created = await _userRepository.CreateAsync(user, cancellationToken);
-        return new UserResponse(created.Id, created.Username, created.Email);
+        return new UserResponse(created.Id, created.Username, created.Email ,created.FirstName, created.LastName);
     }
 
     public async Task<LoginResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken)
