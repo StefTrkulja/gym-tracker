@@ -23,6 +23,14 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(255);
 
         builder.HasIndex(u => u.Email).IsUnique();
+
+        builder.Property(u => u.FirstName)
+            .IsRequired()
+            .HasMaxLength(50);
+
+        builder.Property(u => u.LastName)
+            .IsRequired()
+            .HasMaxLength(50);
         
         
     }

@@ -19,7 +19,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
     });
 });
 
@@ -35,6 +35,7 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseCors();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
