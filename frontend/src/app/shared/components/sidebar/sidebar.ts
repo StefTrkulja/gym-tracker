@@ -19,7 +19,7 @@ export class Sidebar {
   currentUser = this.authService.currentUser;
 
   openSettings(): void {
-    console.log("Za sada samo postoji")
+    console.log("TODO ako stignem")
   }
 
   logout(): void {

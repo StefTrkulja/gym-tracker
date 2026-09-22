@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using GymTracker.Application.Contracts.UseCases.Workouts;
 using GymTracker.Application.DTOs.Workouts;
+using GymTracker.Api.Extensions;
 
 namespace GymTracker.Api.Controllers;
 
@@ -20,7 +21,7 @@ public class WorkoutsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         var workouts = await _workoutService.GetAllForUserAsync(userId, cancellationToken);
         return Ok(workouts);
     }
@@ -28,7 +29,7 @@ public class WorkoutsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateWorkoutRequest request, CancellationToken cancellationToken)
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         var workout = await _workoutService.CreateAsync(userId, request, cancellationToken);
         return Ok(workout);
     }
@@ -36,7 +37,7 @@ public class WorkoutsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateWorkoutRequest request, CancellationToken cancellationToken)
     {
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         var workout = await _workoutService.UpdateAsync(userId, id, request, cancellationToken);
         return Ok(workout);
     }
@@ -45,15 +46,9 @@ public class WorkoutsController : ControllerBase
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         Console.WriteLine("Udjes li ovde ikada");
-        var userId = GetUserId();
+        var userId = User.GetUserId();
         await _workoutService.DeleteAsync(userId, id, cancellationToken);
         return NoContent();
     }
 
-    private int GetUserId()
-    {
-        var sub = User.FindFirst("sub")?.Value
-            ?? throw new UnauthorizedAccessException("Invalid token.");
-        return int.Parse(sub);
-    }
 }
