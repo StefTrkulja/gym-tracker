@@ -45,4 +45,12 @@ public class WorkoutRepository : IWorkoutRepository
             .OrderByDescending(w => w.PerformedAt)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<List<Workout>> GetByUserIdAndDateRangeAsync(int userId, DateTime from, DateTime to, CancellationToken cancellationToken)
+    {
+        return await _context.Workouts
+            .Where(w => w.UserId == userId && w.PerformedAt >= from && w.PerformedAt <= to)
+            .OrderBy(w => w.PerformedAt)
+            .ToListAsync(cancellationToken);
+    }
 }

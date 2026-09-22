@@ -12,5 +12,7 @@ namespace GymTracker.Application.Contracts.Persistence
         Task DeleteAsync(Workout workout, CancellationToken cancellationToken);
         Task<Workout?> GetByIdAsync(int id, CancellationToken cancellationToken);
         Task<List<Workout>> GetAllByUserIdAsync(int userId, CancellationToken cancellationToken);
+
+        Task<List<Workout>> GetByUserIdAndDateRangeAsync(int userId, DateTime from, DateTime to, CancellationToken cancellationToken);
     }
 }
