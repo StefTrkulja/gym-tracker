@@ -3,7 +3,7 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, catchError, of, map } from 'rxjs';
 import { LoginRequest, RegisterRequest, CurrentUser } from './models/auth.models';
-
+import { switchMap } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
@@ -15,15 +15,18 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  login(request: LoginRequest): Observable<void> {
+  login(request: LoginRequest): Observable<boolean> {
     return this.http.post<void>( environment.apiHost + `auth/login`, request).pipe(
-      tap(() => this.isLoggedIn.set(true))
+      tap(() => this.isLoggedIn.set(true)),
+      switchMap(() => this.fetchCurrentUser())
+
     );
   }
 
-  register(request: RegisterRequest): Observable<void> {
+  register(request: RegisterRequest): Observable<boolean> {
     return this.http.post<void>(environment.apiHost + `auth/register`, request).pipe(
-      tap(() => this.isLoggedIn.set(true))
+      tap(() => this.isLoggedIn.set(true)),
+      switchMap(() => this.fetchCurrentUser())
     );
   }
 

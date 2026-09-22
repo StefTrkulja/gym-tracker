@@ -1,1 +1,61 @@
-<p>workout-form works!</p>
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit Workout' : 'Add Workout' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Exercise Type</mat-label>
+      <mat-select formControlName="exerciseType">
+        @for (type of exerciseTypes; track type) {
+          <mat-option [value]="type">{{ type }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Date & Time</mat-label>
+      <input matInput type="datetime-local" formControlName="performedAt" />
+    </mat-form-field>
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Duration (min)</mat-label>
+        <input matInput type="number" formControlName="durationMinutes" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Calories Burned</mat-label>
+        <input matInput type="number" formControlName="caloriesBurned" />
+      </mat-form-field>
+    </div>
+
+    <div class="slider-group">
+      <label>Intensity: {{ form.value.intensity }}/10</label>
+      <mat-slider min="1" max="10" step="1" discrete>
+        <input matSliderThumb formControlName="intensity" />
+      </mat-slider>
+    </div>
+
+    <div class="slider-group">
+      <label>Fatigue: {{ form.value.fatigue }}/10</label>
+      <mat-slider min="1" max="10" step="1" discrete>
+        <input matSliderThumb formControlName="fatigue" />
+      </mat-slider>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Notes (optional)</mat-label>
+      <textarea matInput formControlName="notes" rows="3"></textarea>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="isLoading">
+      @if (isLoading) {
+        <mat-spinner diameter="20"></mat-spinner>
+      } @else {
+        {{ isEditMode ? 'Save Changes' : 'Add Workout' }}
+      }
+    </button>
+  </mat-dialog-actions>
+</form>

@@ -1,7 +1,68 @@
+.auth-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+.image-side {
+  position: relative;
+  flex: 1;
+  background-image: url('/images/runner.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  padding: 48px;
+  color: white;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 200px;
+    background: linear-gradient(to right, transparent, #e0e0e0, #fafafa);
+    pointer-events: none;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 8px;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  @media (max-width: 900px) {
+    display: none;
+  }
+}
+
+.form-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: #fafafa;
+  overflow-y: auto;
+}
+
 .auth-card {
   width: 100%;
-  max-width: 520px;  // povećano sa 460px
-  padding: 40px 36px;
+  max-width: 500px;
+  padding: 44px 40px;
   border-radius: 20px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }

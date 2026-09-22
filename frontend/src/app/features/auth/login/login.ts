@@ -40,28 +40,32 @@ export class Login {
     password: new FormControl('', [Validators.required]),
   });
 
-  onSubmit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    this.isLoading = true;
-    const value = this.form.getRawValue();
-
-    this.authService.login({
-      email: value.email!,
-      password: value.password!,
-    }).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.router.navigate(['/']);
-      },
-      error: (err) => {
-        this.isLoading = false;
-        const message = err.error?.error ?? 'Invalid email or password.';
-        this.snackBar.open(message, 'OK', { duration: 5000 });
-      },
-    });
+onSubmit(): void {
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    return;
   }
+
+  this.isLoading = true;
+  const value = this.form.getRawValue();
+
+  this.authService.login({
+    email: value.email!,
+    password: value.password!,
+  }).subscribe({
+    next: (success) => {
+      this.isLoading = false;
+      if (success) {
+        this.router.navigate(['/dashboard']);
+      } else {
+        this.snackBar.open('Login failed. Please try again.', 'OK', { duration: 5000 });
+      }
+    },
+    error: (err) => {
+      this.isLoading = false;
+      const message = err.error?.error ?? 'Invalid email or password.';
+      this.snackBar.open(message, 'OK', { duration: 5000 });
+    },
+  });
+}
 }
