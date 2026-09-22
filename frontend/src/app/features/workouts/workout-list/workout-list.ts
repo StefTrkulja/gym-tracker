@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,19 +12,24 @@ import { WorkoutForm } from '../workout-form/workout-form';
 import { signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { ViewChild } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-workout-list',
-  imports: [Sidebar, MatTableModule, MatButtonModule, MatIconModule, MatChipsModule, DatePipe, MatTooltipModule],
+  imports: [Sidebar, MatTableModule, MatButtonModule, MatIconModule, MatChipsModule, DatePipe, MatTooltipModule, MatPaginatorModule],
   templateUrl: './workout-list.html',
   styleUrl: './workout-list.scss',
 })
-export class WorkoutList implements OnInit {
+export class WorkoutList implements OnInit, AfterViewInit {
   private workoutsService = inject(WorkoutService);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
 
-  workouts = signal<Workout[]>([]);
+  dataSource = new MatTableDataSource<Workout>([]);
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   isLoading = signal<boolean>(false);
 
   displayedColumns = ['exerciseType', 'performedAt', 'durationMinutes', 'caloriesBurned', 'intensity', 'fatigue', 'notes', 'actions'];
@@ -33,11 +38,19 @@ export class WorkoutList implements OnInit {
     this.loadWorkouts();
   }
 
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+  }
+
+  get hasWorkouts(): boolean {
+    return this.dataSource.data.length > 0;
+  }
+
   loadWorkouts(): void {
     this.isLoading.set(true);
     this.workoutsService.getAll().subscribe({
       next: (data) => {
-        this.workouts.set(data)
+        this.dataSource.data = data;
         this.isLoading.set(false);
         console.log(data)
         console.log("Test")

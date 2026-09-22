@@ -12,10 +12,10 @@
 
     @if (isLoading()) {
     <p class="empty-state">Loading...</p>
-    } @else if (workouts().length === 0) {
+    } @else if (!hasWorkouts) {
     <p class="empty-state">No workouts logged yet. Click "Add Workout" to get started.</p>
     } @else {
-    <table mat-table [dataSource]="workouts()" class="workouts-table">
+    <table mat-table [dataSource]="dataSource" class="workouts-table">
       <ng-container matColumnDef="exerciseType">
         <th mat-header-cell *matHeaderCellDef>Type</th>
         <td mat-cell *matCellDef="let w">
@@ -71,6 +71,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+    <mat-paginator [pageSizeOptions]="[10, 25, 50]" [pageSize]="10" showFirstLastButtons></mat-paginator>
     }
   </main>
 </div>
