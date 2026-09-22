@@ -44,6 +44,7 @@ public class WorkoutsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
+        Console.WriteLine("Udjes li ovde ikada");
         var userId = GetUserId();
         await _workoutService.DeleteAsync(userId, id, cancellationToken);
         return NoContent();

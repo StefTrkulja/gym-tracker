@@ -19,11 +19,11 @@ export class WorkoutService {
     return this.http.post<Workout>(environment.apiHost + "workouts", request);
   }
 
-    update(id: number, request: WorkoutRequest): Observable<Workout> {
-    return this.http.put<Workout>( environment.apiHost +'workouts/${id}', request);
+ update(id: number, request: WorkoutRequest): Observable<Workout> {
+    return this.http.put<Workout>(`${environment.apiHost}workouts/${id}`, request);
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(environment.apiHost +'workouts/${id}');
+    return this.http.delete<void>(`${environment.apiHost}workouts/${id}`);
   }
 }

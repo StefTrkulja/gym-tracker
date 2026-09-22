@@ -11,9 +11,11 @@ import { Workout } from '../models/workout.models';
 import { WorkoutForm } from '../workout-form/workout-form';
 import { signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 @Component({
   selector: 'app-workout-list',
-  imports: [Sidebar, MatTableModule, MatButtonModule, MatIconModule, MatChipsModule, DatePipe],
+  imports: [Sidebar, MatTableModule, MatButtonModule, MatIconModule, MatChipsModule, DatePipe, MatTooltipModule],
   templateUrl: './workout-list.html',
   styleUrl: './workout-list.scss',
 })
