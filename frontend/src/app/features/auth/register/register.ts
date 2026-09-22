@@ -52,32 +52,37 @@ export class Register {
     ]),
   });
 
-  onSubmit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    this.isLoading = true;
-    const value = this.form.getRawValue();
-
-    this.authService.register({
-      firstName: value.firstName!,
-      lastName: value.lastName!,
-      username: value.username!,
-      email: value.email!,
-      password: value.password!,
-    }).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.snackBar.open('Welcome to GymTracker!', 'OK', { duration: 3000 });
-        this.router.navigate(['/']);
-      },
-      error: (err) => {
-        this.isLoading = false;
-        const message = err.error?.error ?? 'Registration failed. Please try again.';
-        this.snackBar.open(message, 'OK', { duration: 5000 });
-      },
-    });
+ onSubmit(): void {
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    return;
   }
+
+  this.isLoading = true;
+  const value = this.form.getRawValue();
+
+  this.authService.register({
+    firstName: value.firstName!,
+    lastName: value.lastName!,
+    username: value.username!,
+    email: value.email!,
+    password: value.password!,
+  }).subscribe({
+    next: (success) => {
+      this.isLoading = false;
+      if (success) {
+        this.snackBar.open('Welcome to GymTracker!', 'OK', { duration: 3000 });
+        this.router.navigate(['/dashboard']);
+      } else {
+        this.snackBar.open('Registration succeeded, but failed to load profile. Try aagain.', 'OK', { duration: 5000 });
+        this.router.navigate(['/login']);
+      }
+    },
+    error: (err) => {
+      this.isLoading = false;
+      const message = err.error?.error ?? 'Registration failed. Please try again.';
+      this.snackBar.open(message, 'OK', { duration: 5000 });
+    },
+  });
+}
 }

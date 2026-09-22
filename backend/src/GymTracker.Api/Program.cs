@@ -2,6 +2,7 @@ using GymTracker.Api;
 using GymTracker.Api.Middleware;
 using GymTracker.Application;
 using GymTracker.Infrastructure;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -23,7 +24,10 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 var app = builder.Build();
 
@@ -31,12 +35,14 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}else
+{
+  app.UseHttpsRedirection();
 }
 
 
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors();
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
