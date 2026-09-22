@@ -35,12 +35,14 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}else
+{
+  app.UseHttpsRedirection();
 }
 
 
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors();
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
