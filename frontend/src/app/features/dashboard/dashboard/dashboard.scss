@@ -6,17 +6,202 @@
 
 .content {
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
   background: #f5f6fa;
   padding: 32px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  flex-shrink: 0;
 
   h1 {
-    margin: 0 0 8px;
+    margin: 0;
     font-size: 1.8rem;
     color: #222;
   }
+}
 
-  p {
-    color: #777;
+.month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-shrink: 0;
+
+  .month-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    min-width: 160px;
+    text-align: center;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  color: #999;
+  padding: 48px 0;
+}
+
+.chart-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  height: 260px;
+  margin-bottom: 20px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.bottom-row {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 20px;
+  flex: 1;
+  min-height: 0;
+}
+
+.month-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
+
+.summary-card {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  min-height: 0;
+
+  mat-icon {
+    font-size: 30px;
+    width: 30px;
+    height: 30px;
+    color: #3f51b5;
+    flex-shrink: 0;
+  }
+
+  .summary-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .summary-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #222;
+    line-height: 1.2;
+  }
+
+  .summary-label {
+    font-size: 0.78rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+}
+
+.weeks-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 16px;
+  height: 100%;
+}
+
+.week-card {
+  padding: 16px 18px;
+  border-radius: 14px;
+  box-sizing: border-box;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  &.empty-week {
+    background: #fafafa;
+    opacity: 0.7;
+  }
+}
+
+.week-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+
+  .week-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #333;
+  }
+
+  .week-range {
+    font-size: 0.82rem;
+    color: #999;
+  }
+}
+
+.no-workouts {
+  color: #aaa;
+  font-size: 0.85rem;
+  font-style: italic;
+  margin: 8px 0 0;
+}
+
+.week-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+
+    .stat-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #3f51b5;
+    }
+
+    .stat-label {
+      font-size: 0.68rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .bottom-row {
+    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .month-summary {
+    flex-direction: row;
+    height: auto;
+  }
+
+  .weeks-grid {
+    height: auto;
+    grid-template-columns: repeat(2, 1fr);
   }
 }

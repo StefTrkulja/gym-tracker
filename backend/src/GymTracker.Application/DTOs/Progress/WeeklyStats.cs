@@ -8,6 +8,7 @@ namespace GymTracker.Application.DTOs.Progress;
         DateOnly StartDate,
         DateOnly EndDate,
         int WorkoutCount,
+        int TotalCaloriesBurned,
         int TotalDurationMinutes,
         double? AverageIntensity,
         double? AverageFatigue

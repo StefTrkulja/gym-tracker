@@ -1,7 +1,87 @@
 <div class="main-container">
   <app-sidebar></app-sidebar>
+
   <main class="content">
-    <h1>Dashboard</h1>
-    <p>Welcome back! Your overview will appear here.</p>
+    <div class="header">
+      <h1>Dashboard</h1>
+    </div>
+
+    <div class="month-nav">
+      <button mat-icon-button (click)="previousMonth()" aria-label="Previous month">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <span class="month-label">{{ currentMonthLabel }}</span>
+      <button mat-icon-button (click)="nextMonth()" aria-label="Next month">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+
+    @if (isLoading() && weeks().length === 0) {
+      <p class="empty-state">Loading...</p>
+    } @else {
+      <div class="chart-card">
+        <canvas baseChart [data]="chartData" [options]="chartOptions" type="bar"></canvas>
+      </div>
+
+      <div class="bottom-row">
+        <div class="month-summary">
+          <div class="summary-card">
+            <mat-icon>fitness_center</mat-icon>
+            <div class="summary-text">
+              <span class="summary-value">{{ monthSummary.totalWorkouts }}</span>
+              <span class="summary-label">Total Workouts</span>
+            </div>
+          </div>
+          <div class="summary-card">
+            <mat-icon>schedule</mat-icon>
+            <div class="summary-text">
+              <span class="summary-value">{{ monthSummary.totalMinutes }}</span>
+              <span class="summary-label">Total Minutes</span>
+            </div>
+          </div>
+          <div class="summary-card">
+            <mat-icon>local_fire_department</mat-icon>
+            <div class="summary-text">
+              <span class="summary-value">{{ monthSummary.totalCalories }}</span>
+              <span class="summary-label">Total Calories</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="weeks-grid">
+          @for (week of weeks(); track week.weekIndex) {
+            <mat-card class="week-card" [class.empty-week]="week.workoutCount === 0">
+              <div class="week-header">
+                <span class="week-title">Week {{ week.weekIndex }}</span>
+                <span class="week-range">{{ formatDateRange(week.startDate, week.endDate) }}</span>
+              </div>
+
+              @if (week.workoutCount === 0) {
+                <p class="no-workouts">No workouts logged</p>
+              } @else {
+                <div class="week-stats">
+                  <div class="stat">
+                    <span class="stat-value">{{ week.workoutCount }}</span>
+                    <span class="stat-label">Workouts</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-value">{{ week.totalDurationMinutes }}</span>
+                    <span class="stat-label">Minutes</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-value">{{ week.averageIntensity }}</span>
+                    <span class="stat-label">Avg Intensity</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-value">{{ week.averageFatigue }}</span>
+                    <span class="stat-label">Avg Fatigue</span>
+                  </div>
+                </div>
+              }
+            </mat-card>
+          }
+        </div>
+      </div>
+    }
   </main>
 </div>

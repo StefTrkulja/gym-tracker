@@ -65,8 +65,9 @@ namespace GymTracker.Application.UseCases.Progress
                     EndDate: weekEnd,
                     WorkoutCount: workoutsInWeek.Count,
                     TotalDurationMinutes: workoutsInWeek.Sum(w => w.DurationMinutes),
-                    AverageIntensity: workoutsInWeek.Count > 0 ? workoutsInWeek.Average(w => w.Intensity) : null,
-                    AverageFatigue: workoutsInWeek.Count > 0 ? workoutsInWeek.Average(w => w.Fatigue) : null
+                    TotalCaloriesBurned: workoutsInWeek.Sum(w => w.CaloriesBurned),
+                    AverageIntensity: workoutsInWeek.Count > 0 ? Math.Truncate(workoutsInWeek.Average(w => w.Intensity) * 100) / 100 : null,
+                    AverageFatigue: workoutsInWeek.Count > 0 ? Math.Truncate(workoutsInWeek.Average(w => w.Fatigue) * 100) / 100 : null
                 ));
 
                 cursor = cursor.AddDays(7);
