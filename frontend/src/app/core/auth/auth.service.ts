@@ -2,13 +2,12 @@ import { environment } from '../../../env/environment';
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, catchError, of, map } from 'rxjs';
-import { LoginRequest, RegisterRequest, CurrentUser } from './models/auth.models';
+import { LoginRequest, RegisterRequest, CurrentUser} from './models/auth.models';
 import { switchMap } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly baseUrl = 'https://localhost:7003/api/auth';
 
   isLoggedIn = signal<boolean>(false);
   currentUser = signal<CurrentUser | null>(null);
