@@ -17,10 +17,11 @@ public class UserService : IUserService
 
     
 
-    public async Task<UserResponse> UpdateAsync(UpdateUserRequest request, CancellationToken cancellationToken)
+    public async Task<UserResponse> UpdateAsync(int userId,UpdateUserRequest request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(request.Id, cancellationToken);
-        if (user is null) throw new KeyNotFoundException($"User with id {request.Id} not found.");
+        
+        var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
+        if (user is null) throw new KeyNotFoundException($"User with id {userId} not found.");
 
         if (user.Email != request.Email &&
             await _userRepository.GetByEmailAsync(request.Email, cancellationToken) is not null)
