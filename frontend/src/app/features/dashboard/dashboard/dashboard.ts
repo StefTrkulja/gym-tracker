@@ -1,19 +1,17 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Sidebar } from '../../../shared/components/sidebar/sidebar';
 import { ProgressService } from '../../progress/progress.service';
 import { WeeklyStats } from '../../progress/models/progress.models';
 import { ChartConfiguration, ChartData, Chart, BarController, BarElement, CategoryScale, LinearScale, Legend, Tooltip } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
+import { MATERIAL_MODULES } from '../../../shared/material';
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Legend, Tooltip);
 
 @Component({
   selector: 'app-dashboard',
-  imports: [Sidebar, MatIconModule, MatButtonModule, MatCardModule, BaseChartDirective],
+  imports: [Sidebar, BaseChartDirective, ...MATERIAL_MODULES],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
