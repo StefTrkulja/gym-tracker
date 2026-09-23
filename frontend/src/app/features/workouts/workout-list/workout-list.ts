@@ -1,24 +1,21 @@
-import { AfterViewInit, Component, inject, OnInit } from '@angular/core';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
+import { AfterViewInit, Component, inject, OnInit, ViewChild, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 import { Sidebar } from '../../../shared/components/sidebar/sidebar';
 import { WorkoutService } from '../workout.service';
-import { Workout } from '../models/workout.models';
+import { Workout, ExerciseType } from '../models/workout.models';
 import { WorkoutForm } from '../workout-form/workout-form';
-import { signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
-import { ViewChild } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { MATERIAL_MODULES } from '../../../shared/material';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+
+const EXERCISE_TYPES: ExerciseType[] = ['Cardio', 'Strength', 'Flexibility', 'Sport', 'Yoga'];
 
 @Component({
   selector: 'app-workout-list',
-  imports: [Sidebar, MatTableModule, MatButtonModule, MatIconModule, MatChipsModule, DatePipe, MatTooltipModule, MatPaginatorModule],
+  imports: [Sidebar, DatePipe, ...MATERIAL_MODULES, ReactiveFormsModule],
   templateUrl: './workout-list.html',
   styleUrl: './workout-list.scss',
 })
@@ -31,11 +28,19 @@ export class WorkoutList implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   isLoading = signal<boolean>(false);
+  exerciseTypes = EXERCISE_TYPES;
+  filterControl = new FormControl<ExerciseType | 'All'>('All');
 
   displayedColumns = ['exerciseType', 'performedAt', 'durationMinutes', 'caloriesBurned', 'intensity', 'fatigue', 'notes', 'actions'];
 
   ngOnInit(): void {
     this.loadWorkouts();
+
+    this.dataSource.filterPredicate = (workout: Workout, filter: string) => { return filter === 'All' || workout.exerciseType === filter; };
+    this.filterControl.valueChanges.subscribe((value) => {
+      this.dataSource.filter = value ?? 'All';
+    });
+
   }
 
   ngAfterViewInit(): void {
@@ -54,6 +59,7 @@ export class WorkoutList implements OnInit, AfterViewInit {
         this.isLoading.set(false);
         console.log(data)
         console.log("Test")
+        this.dataSource.filter = this.filterControl.value ?? 'All';
       },
       error: () => {
         console.log("Testic")
@@ -97,4 +103,8 @@ export class WorkoutList implements OnInit, AfterViewInit {
       },
     });
   }
+
+  get hasFilteredWorkouts(): boolean {
+  return this.dataSource.filteredData.length > 0;
+}
 }

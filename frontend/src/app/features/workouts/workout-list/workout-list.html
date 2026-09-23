@@ -9,12 +9,24 @@
         Add Workout
       </button>
     </div>
-
+<div class="header-actions">
+  <mat-form-field appearance="outline" class="filter-field">
+    <mat-label>Filter by type</mat-label>
+    <mat-select [formControl]="filterControl">
+      <mat-option value="All">All</mat-option>
+      @for (type of exerciseTypes; track type) {
+        <mat-option [value]="type">{{ type }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
     @if (isLoading()) {
     <p class="empty-state">Loading...</p>
     } @else if (!hasWorkouts) {
     <p class="empty-state">No workouts logged yet. Click "Add Workout" to get started.</p>
-    } @else {
+    } @else if (!hasFilteredWorkouts) {
+  <p class="empty-state">No workouts match this filter.</p>}
+    @else {
     <table mat-table [dataSource]="dataSource" class="workouts-table">
       <ng-container matColumnDef="exerciseType">
         <th mat-header-cell *matHeaderCellDef>Type</th>

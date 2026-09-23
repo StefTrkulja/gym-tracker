@@ -50,3 +50,13 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filter-field {
+  width: 180px;
+}

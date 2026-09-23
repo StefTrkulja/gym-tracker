@@ -1,16 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSliderModule } from '@angular/material/slider';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { WorkoutService } from '../workout.service';
 import { ExerciseType, Workout } from '../models/workout.models';
+import { MATERIAL_MODULES } from '../../../shared/material';
 
 const EXERCISE_TYPES: ExerciseType[] = ['Cardio', 'Strength', 'Flexibility', 'Sport', 'Yoga'];
 
@@ -18,14 +12,7 @@ const EXERCISE_TYPES: ExerciseType[] = ['Cardio', 'Strength', 'Flexibility', 'Sp
   selector: 'app-workout-form',
   imports: [
     ReactiveFormsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSliderModule,
-    MatProgressSpinnerModule,
+    ...MATERIAL_MODULES
   ],
   templateUrl: './workout-form.html',
   styleUrl: './workout-form.scss',
