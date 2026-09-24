@@ -80,6 +80,9 @@ public class AuthService : IAuthService
             throw new UnauthorizedException("Invalid Google token.");
         }
 
+        if (!payload.EmailVerified)
+            throw new UnauthorizedException("Google email is not verified.");
+
         var user = await _userRepository.GetByEmailAsync(payload.Email, cancellationToken);
 
         if (user is null)
