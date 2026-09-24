@@ -4,4 +4,5 @@ export interface UpdateProfileRequest {
   email: string;
   firstName: string;
   lastName: string;
+  isGoogleAccount?: boolean;
 }

@@ -16,13 +16,14 @@ public class UserService : IUserService
     }
 
     
-
     public async Task<UserResponse> UpdateAsync(int userId,UpdateUserRequest request, CancellationToken cancellationToken)
     {
         
         var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
         if (user is null) throw new KeyNotFoundException($"User with id {userId} not found.");
 
+        if (user.IsGoogleAccount && user.Email != request.Email)
+            throw new InvalidOperationException("Email cannot be changed for Google accounts.");
         if (user.Email != request.Email &&
             await _userRepository.GetByEmailAsync(request.Email, cancellationToken) is not null)
             throw new InvalidOperationException("A user with this email already exists.");
@@ -37,21 +38,21 @@ public class UserService : IUserService
         user.LastName = request.LastName;
 
         var updated = await _userRepository.Update(user, cancellationToken);
-        return new UserResponse(updated.Id, updated.Username, updated.Email, updated.FirstName, updated.LastName);
+        return new UserResponse(updated.Id, updated.Username, updated.Email, updated.FirstName, updated.LastName, updated.IsGoogleAccount);
     }
 
     public async Task<UserResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetByIdAsync(id, cancellationToken);
         if (user is null) return null;
-        return new UserResponse(user.Id, user.Username, user.Email, user.FirstName, user.LastName);
+        return new UserResponse(user.Id, user.Username, user.Email, user.FirstName, user.LastName, user.IsGoogleAccount);
     }
 
     public async Task<UserResponse?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
         if (user is null) return null;
-        return new UserResponse(user.Id, user.Username, user.Email, user.FirstName, user.LastName);
+        return new UserResponse(user.Id, user.Username, user.Email, user.FirstName, user.LastName, user.IsGoogleAccount);
     }
 
 }

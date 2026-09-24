@@ -22,6 +22,14 @@ export class AuthService {
     );
   }
 
+  loginWithGoogle(idToken: string ): Observable<boolean> {
+    return this.http.post<void>(environment.apiHost + 'auth/google', {idToken}).pipe(
+      tap(() => this.isLoggedIn.set(true)),
+      switchMap(() => this.fetchCurrentUser())
+    );
+  }
+
+
   register(request: RegisterRequest): Observable<boolean> {
     return this.http.post<void>(environment.apiHost + `auth/register`, request).pipe(
       tap(() => this.isLoggedIn.set(true)),
