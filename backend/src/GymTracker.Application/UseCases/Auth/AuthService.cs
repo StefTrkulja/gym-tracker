@@ -4,6 +4,7 @@ using GymTracker.Application.Contracts.Persistence;
 using GymTracker.Application.Contracts.UseCases.Auth;
 using GymTracker.Application.DTOs.Auth;
 using GymTracker.Application.DTOs.Users;
+using GymTracker.Application.Exceptions;
 using GymTracker.Domain.Models;
 using Microsoft.Extensions.Configuration;
 
@@ -30,10 +31,10 @@ public class AuthService : IAuthService
         var existingUsername = await _userRepository.GetByUsernameAsync(request.Username, cancellationToken);
 
         if (existingEmail is not null)
-            throw new InvalidOperationException("A user with this email already exists.");
+            throw new ConflictException("A user with this email already exists.");
 
         if (existingUsername is not null)
-            throw new InvalidOperationException("A user with this username already exists.");
+            throw new ConflictException("A user with this username already exists.");
 
 
         var user = new User
@@ -58,7 +59,7 @@ public class AuthService : IAuthService
     {
         var user = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
         if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHashed))
-            throw new UnauthorizedAccessException("Invalid email or password.");
+            throw new UnauthorizedException("Invalid email or password.");
 
         var token = _tokenService.GenerateToken(user);
         return new LoginResponse(token);
@@ -76,7 +77,7 @@ public class AuthService : IAuthService
         }
         catch (InvalidJwtException)
         {
-            throw new UnauthorizedAccessException("Invalid Google token.");
+            throw new UnauthorizedException("Invalid Google token.");
         }
 
         var user = await _userRepository.GetByEmailAsync(payload.Email, cancellationToken);

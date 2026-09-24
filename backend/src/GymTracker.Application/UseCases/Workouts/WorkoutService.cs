@@ -1,6 +1,7 @@
 ﻿using GymTracker.Application.Contracts.Persistence;
 using GymTracker.Application.Contracts.UseCases.Workouts;
 using GymTracker.Application.DTOs.Workouts;
+using GymTracker.Application.Exceptions;
 using GymTracker.Domain.Models;
 
 namespace GymTracker.Application.UseCases.Workouts;
@@ -36,10 +37,10 @@ public class WorkoutService : IWorkoutService
     {
         var workout = await _workoutRepository.GetByIdAsync(workoutId, cancellationToken);
         if (workout is null)
-            throw new KeyNotFoundException($"Workout with id {workoutId} not found.");
+            throw new NotFoundException($"Workout with id {workoutId} not found.");
 
         if (workout.UserId != userId)
-            throw new UnauthorizedAccessException("You are not allowed to modify this workout.");
+            throw new ForbiddenException("You are not allowed to modify this workout.");
 
         workout.ExerciseType = request.ExerciseType;
         workout.DurationMinutes = request.DurationMinutes;
@@ -57,10 +58,10 @@ public class WorkoutService : IWorkoutService
     {
         var workout = await _workoutRepository.GetByIdAsync(workoutId, cancellationToken);
         if (workout is null)
-            throw new KeyNotFoundException($"Workout with id {workoutId} not found.");
+            throw new NotFoundException($"Workout with id {workoutId} not found.");
 
         if (workout.UserId != userId)
-            throw new UnauthorizedAccessException("You are not allowed to delete this workout.");
+            throw new ForbiddenException("You are not allowed to delete this workout.");
 
         await _workoutRepository.DeleteAsync(workout, cancellationToken);
     }

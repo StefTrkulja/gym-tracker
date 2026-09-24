@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using GymTracker.Application.Exceptions;
+using System.Net;
 using System.Text.Json;
 
 namespace GymTracker.Api.Middleware;
@@ -20,17 +21,27 @@ public class ExceptionMiddleware
         {
             await _next(context);
         }
-        catch (KeyNotFoundException ex)
+        catch (NotFoundException ex)
         {
             _logger.LogWarning(ex, ex.Message);
             await WriteResponse(context, HttpStatusCode.NotFound, ex.Message);
         }
-        catch (UnauthorizedAccessException ex)
+        catch (ConflictException ex)
+        {
+            _logger.LogWarning(ex, ex.Message);
+            await WriteResponse(context, HttpStatusCode.Conflict, ex.Message);
+        }
+        catch (ForbiddenException ex)
+        {
+            _logger.LogWarning(ex, ex.Message);
+            await WriteResponse(context, HttpStatusCode.Forbidden, ex.Message);
+        }
+        catch (UnauthorizedException ex)
         {
             _logger.LogWarning(ex, ex.Message);
             await WriteResponse(context, HttpStatusCode.Unauthorized, ex.Message);
         }
-        catch (InvalidOperationException ex)
+        catch (BadRequestException ex)
         {
             _logger.LogWarning(ex, ex.Message);
             await WriteResponse(context, HttpStatusCode.BadRequest, ex.Message);
