@@ -35,7 +35,7 @@ public class UserService : IUserService
 
         user.UpdateProfile(request.Username, request.Email, request.FirstName, request.LastName);
 
-        var updated = await _userRepository.Update(user, cancellationToken);
+        var updated = await _userRepository.UpdateAsync(user, cancellationToken);
         return new UserResponse(updated.Id, updated.Username, updated.Email, updated.FirstName, updated.LastName, updated.IsGoogleAccount);
     }
 
