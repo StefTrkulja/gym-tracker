@@ -1,4 +1,5 @@
 ﻿using GymTracker.Application.Exceptions;
+using GymTracker.Domain.Exceptions;
 using System.Net;
 using System.Text.Json;
 
@@ -42,6 +43,11 @@ public class ExceptionMiddleware
             await WriteResponse(context, HttpStatusCode.Unauthorized, ex.Message);
         }
         catch (BadRequestException ex)
+        {
+            _logger.LogWarning(ex, ex.Message);
+            await WriteResponse(context, HttpStatusCode.BadRequest, ex.Message);
+        }
+        catch (DomainException ex)
         {
             _logger.LogWarning(ex, ex.Message);
             await WriteResponse(context, HttpStatusCode.BadRequest, ex.Message);
