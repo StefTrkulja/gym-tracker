@@ -39,17 +39,10 @@ public class UserService : IUserService
         return new UserResponse(updated.Id, updated.Username, updated.Email, updated.FirstName, updated.LastName, updated.IsGoogleAccount);
     }
 
-    public async Task<UserResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<UserResponse> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetByIdAsync(id, cancellationToken);
-        if (user is null) return null;
-        return new UserResponse(user.Id, user.Username, user.Email, user.FirstName, user.LastName, user.IsGoogleAccount);
-    }
-
-    public async Task<UserResponse?> GetByEmailAsync(string email, CancellationToken cancellationToken)
-    {
-        var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
-        if (user is null) return null;
+        if (user is null) throw new NotFoundException($"User with id {id} not found");
         return new UserResponse(user.Id, user.Username, user.Email, user.FirstName, user.LastName, user.IsGoogleAccount);
     }
 
