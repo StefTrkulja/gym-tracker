@@ -4,6 +4,8 @@ using GymTracker.Application.DTOs.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using GymTracker.Application.Contracts.UseCases.Users;
+using GymTracker.Api.Extensions;
 
 namespace GymTracker.Api.Controllers;
 
@@ -13,10 +15,13 @@ public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
     private readonly IConfiguration _configuration;
-    public AuthController(IAuthService authService, IConfiguration configuration)
+
+    private readonly IUserService _userService;
+    public AuthController(IAuthService authService, IConfiguration configuration, IUserService userService)
     {
         _authService = authService;
         _configuration = configuration;
+        _userService = userService;
     }
 
     [HttpPost("register")]
@@ -44,12 +49,10 @@ public class AuthController : ControllerBase
 
     [HttpGet("me")]
     [Authorize]
-    public IActionResult Me()
+    public async Task<IActionResult> Me(CancellationToken cancellationToken)
     {
-        var userId = User.FindFirst("sub")?.Value;
-        var email = User.FindFirst("email")?.Value;
-        var username = User.FindFirst("unique_name")?.Value;
-        return Ok(new { id = userId, email, username });
+        var user = await _userService.GetByIdAsync(User.GetUserId(),cancellationToken);
+        return Ok(new { id = user.Id, user.Email, user.Username });
     }
 
     [HttpPost("google")]

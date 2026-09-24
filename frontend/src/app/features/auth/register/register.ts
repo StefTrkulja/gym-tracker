@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -22,8 +22,10 @@ export class Register {
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
 
-  isLoading = false;
-  hidePassword = true;
+
+  isLoading = signal(false);
+  hidePassword = signal(true);
+
 
   form = new FormGroup({
     firstName: new FormControl('', [Validators.required, Validators.maxLength(50)]),
@@ -42,37 +44,37 @@ export class Register {
     ]),
   });
 
- onSubmit(): void {
-  if (this.form.invalid) {
-    this.form.markAllAsTouched();
-    return;
+  onSubmit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    this.isLoading.set(true);
+    const value = this.form.getRawValue();
+
+    this.authService.register({
+      firstName: value.firstName!,
+      lastName: value.lastName!,
+      username: value.username!,
+      email: value.email!,
+      password: value.password!,
+    }).subscribe({
+      next: (success) => {
+        this.isLoading.set(false);
+        if (success) {
+          this.snackBar.open('Welcome to GymTracker!', 'OK', { duration: 3000 });
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.snackBar.open('Registration succeeded, but failed to load profile. Try aagain.', 'OK', { duration: 5000 });
+          this.router.navigate(['/login']);
+        }
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        const message = err.error?.error ?? 'Registration failed. Please try again.';
+        this.snackBar.open(message, 'OK', { duration: 5000 });
+      },
+    });
   }
-
-  this.isLoading = true;
-  const value = this.form.getRawValue();
-
-  this.authService.register({
-    firstName: value.firstName!,
-    lastName: value.lastName!,
-    username: value.username!,
-    email: value.email!,
-    password: value.password!,
-  }).subscribe({
-    next: (success) => {
-      this.isLoading = false;
-      if (success) {
-        this.snackBar.open('Welcome to GymTracker!', 'OK', { duration: 3000 });
-        this.router.navigate(['/dashboard']);
-      } else {
-        this.snackBar.open('Registration succeeded, but failed to load profile. Try aagain.', 'OK', { duration: 5000 });
-        this.router.navigate(['/login']);
-      }
-    },
-    error: (err) => {
-      this.isLoading = false;
-      const message = err.error?.error ?? 'Registration failed. Please try again.';
-      this.snackBar.open(message, 'OK', { duration: 5000 });
-    },
-  });
-}
 }

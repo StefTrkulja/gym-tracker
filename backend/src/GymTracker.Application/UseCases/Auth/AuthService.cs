@@ -36,8 +36,8 @@ public class AuthService : IAuthService
         if (existingUsername is not null)
             throw new ConflictException("A user with this username already exists.");
 
-
-        var user = new User(request.Username, request.Password, request.Email, request.FirstName, request.LastName);
+        var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+        var user = new User(request.Username, passwordHash, request.Email, request.FirstName, request.LastName);
         var created = await _userRepository.CreateAsync(user, cancellationToken);
  
         var token = _tokenService.GenerateToken(created);
