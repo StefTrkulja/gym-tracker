@@ -7,6 +7,8 @@ using GymTracker.Application.Contracts.UseCases.Workouts;
 using GymTracker.Application.UseCases.Workouts;
 using GymTracker.Application.Contracts.UseCases.Progress;
 using GymTracker.Application.UseCases.Progress;
+using GymTracker.Application.Contracts.UseCases.BodyMeasurements;
+using GymTracker.Application.UseCases.BodyMeasurements;
 
 namespace GymTracker.Application;
 
@@ -18,7 +20,8 @@ public static class DependencyInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IWorkoutService, WorkoutService>();
-        services.AddScoped<IProgressService, ProgressService>();  
+        services.AddScoped<IProgressService, ProgressService>();
+        services.AddScoped<IBodyMeasurementService, BodyMeasurementService>();
         return services;
     }
 }

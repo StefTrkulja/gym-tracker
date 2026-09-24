@@ -7,6 +7,7 @@ public sealed class DataContext(DbContextOptions options) : DbContext(options)
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Workout> Workouts { get; set; }
+    public DbSet<BodyMeasurement> BodyMeasurements { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
