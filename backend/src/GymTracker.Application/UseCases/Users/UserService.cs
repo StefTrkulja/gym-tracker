@@ -33,10 +33,7 @@ public class UserService : IUserService
             await _userRepository.GetByUsernameAsync(request.Username, cancellationToken) is not null)
             throw new ConflictException("A user with this username already exists.");
 
-        user.Username = request.Username;
-        user.Email = request.Email;
-        user.FirstName = request.FirstName;
-        user.LastName = request.LastName;
+        user.UpdateProfile(request.Username, request.Email, request.FirstName, request.LastName);
 
         var updated = await _userRepository.Update(user, cancellationToken);
         return new UserResponse(updated.Id, updated.Username, updated.Email, updated.FirstName, updated.LastName, updated.IsGoogleAccount);

@@ -37,18 +37,9 @@ public class AuthService : IAuthService
             throw new ConflictException("A user with this username already exists.");
 
 
-        var user = new User
-        {
-            Username = request.Username,
-            Email = request.Email,
-            PasswordHashed = BCrypt.Net.BCrypt.HashPassword(request.Password),
-            FirstName = request.FirstName,
-            LastName = request.LastName
-
-        };
-
+        var user = new User(request.Username, request.Password, request.Email, request.FirstName, request.LastName);
         var created = await _userRepository.CreateAsync(user, cancellationToken);
-        
+ 
         var token = _tokenService.GenerateToken(created);
 
         return new LoginResponse(token);
@@ -88,16 +79,9 @@ public class AuthService : IAuthService
         if (user is null)
         {
             var username = await GenerateUniqueUsernameAsync(payload.Email, cancellationToken);
+            var randomPasswordHash = BCrypt.Net.BCrypt.HashPassword(Guid.NewGuid().ToString());
 
-            user = new User
-            {
-                Username = username,
-                Email = payload.Email,
-                FirstName = payload.GivenName ?? "",
-                LastName = payload.FamilyName ?? "",
-                PasswordHashed = BCrypt.Net.BCrypt.HashPassword(Guid.NewGuid().ToString()),
-                IsGoogleAccount = true
-            };
+            user = new User(username, randomPasswordHash, payload.Email, payload.GivenName ?? "", payload.FamilyName ?? "", true);
             user = await _userRepository.CreateAsync(user, cancellationToken);
         }
 

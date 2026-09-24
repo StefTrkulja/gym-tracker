@@ -17,17 +17,7 @@ public class WorkoutService : IWorkoutService
 
     public async Task<WorkoutResponse> CreateAsync(int userId, CreateWorkoutRequest request, CancellationToken cancellationToken)
     {
-        var workout = new Workout
-        {
-            UserId = userId,
-            ExerciseType = request.ExerciseType,
-            DurationMinutes = request.DurationMinutes,
-            CaloriesBurned = request.CaloriesBurned,
-            Intensity = request.Intensity,
-            Fatigue = request.Fatigue,
-            Notes = request.Notes,
-            PerformedAt = request.PerformedAt
-        };
+        var workout = new Workout(userId, request.ExerciseType, request.DurationMinutes, request.CaloriesBurned, request.Intensity, request.Fatigue, request.Notes, request.PerformedAt);
 
         var created = await _workoutRepository.CreateAsync(workout, cancellationToken);
         return ToResponse(created);
@@ -39,16 +29,10 @@ public class WorkoutService : IWorkoutService
         if (workout is null)
             throw new NotFoundException($"Workout with id {workoutId} not found.");
 
-        if (workout.UserId != userId)
+        if (!workout.IsOwnedBy(userId))
             throw new ForbiddenException("You are not allowed to modify this workout.");
 
-        workout.ExerciseType = request.ExerciseType;
-        workout.DurationMinutes = request.DurationMinutes;
-        workout.CaloriesBurned = request.CaloriesBurned;
-        workout.Intensity = request.Intensity;
-        workout.Fatigue = request.Fatigue;
-        workout.Notes = request.Notes;
-        workout.PerformedAt = request.PerformedAt;
+        workout.Update(request.ExerciseType, request.DurationMinutes, request.CaloriesBurned, request.Intensity, request.Fatigue, request.Notes, request.PerformedAt);
 
         var updated = await _workoutRepository.UpdateAsync(workout, cancellationToken);
         return ToResponse(updated);
