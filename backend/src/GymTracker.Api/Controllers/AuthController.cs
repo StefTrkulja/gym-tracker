@@ -51,6 +51,14 @@ public class AuthController : ControllerBase
         return Ok(new { id = userId, email, username });
     }
 
+    [HttpPost("google")]
+    public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request, CancellationToken cancellationToken)
+    {
+        var response = await _authService.GoogleLoginAsync(request.IdToken, cancellationToken);
+        SetTokenCookie(response.Token);
+        return Ok();
+    }
+
     private void SetTokenCookie(string token)
     {
         Response.Cookies.Append("access_token", token, new CookieOptions
