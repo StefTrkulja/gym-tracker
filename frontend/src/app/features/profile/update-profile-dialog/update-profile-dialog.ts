@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angula
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MATERIAL_MODULES } from '../../../shared/material';
-import { UpdateProfileRequest } from '../models/user.models';
+import {UserProfile } from '../models/user.models';
 import { UserService } from '../user.service';
 import { signal } from '@angular/core';
 
@@ -19,7 +19,7 @@ export class UpdateProfileDialog {
   private snackBar = inject(MatSnackBar);
   private dialogRef = inject(MatDialogRef<UpdateProfileDialog>);
 
-  data = inject<UpdateProfileRequest>(MAT_DIALOG_DATA);
+  data = inject<UserProfile>(MAT_DIALOG_DATA);
 
   isLoading = signal<boolean>(false);
   isGoogleAccount = this.data.isGoogleAccount ?? false;
@@ -46,7 +46,6 @@ export class UpdateProfileDialog {
     const value = this.form.getRawValue();
 
     this.userService.updateProfile({
-      id: this.data.id,
       username: value.username!,
       email: value.email!,
       firstName: value.firstName!,

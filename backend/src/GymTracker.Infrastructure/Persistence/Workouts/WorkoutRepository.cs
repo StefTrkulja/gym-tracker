@@ -41,6 +41,7 @@ public class WorkoutRepository : IWorkoutRepository
     public async Task<List<Workout>> GetAllByUserIdAsync(int userId, CancellationToken cancellationToken)
     {
         return await _context.Workouts
+            .AsNoTracking()
             .Where(w => w.UserId == userId)
             .OrderByDescending(w => w.PerformedAt)
             .ToListAsync(cancellationToken);
@@ -49,6 +50,7 @@ public class WorkoutRepository : IWorkoutRepository
     public async Task<List<Workout>> GetByUserIdAndDateRangeAsync(int userId, DateTime from, DateTime to, CancellationToken cancellationToken)
     {
         return await _context.Workouts
+            .AsNoTracking()
             .Where(w => w.UserId == userId && w.PerformedAt >= from && w.PerformedAt <= to)
             .OrderBy(w => w.PerformedAt)
             .ToListAsync(cancellationToken);

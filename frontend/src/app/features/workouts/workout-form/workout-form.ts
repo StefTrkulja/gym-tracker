@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -24,7 +24,7 @@ export class WorkoutForm {
   data = inject<{ workout?: Workout }>(MAT_DIALOG_DATA, { optional: true });
 
   exerciseTypes = EXERCISE_TYPES;
-  isLoading = false;
+  isLoading = signal(false);
   isEditMode = !!this.data?.workout;
 
   form = new FormGroup({
@@ -58,7 +58,7 @@ export class WorkoutForm {
       return;
     }
 
-    this.isLoading = true;
+    this.isLoading.set(true);
     const value = this.form.getRawValue();
 
     const request = {
@@ -77,11 +77,11 @@ export class WorkoutForm {
 
     request$.subscribe({
       next: () => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.dialogRef.close(true);
       },
       error: (err) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         const message = err.error?.error ?? 'Something went wrong. Please try again.';
         this.snackBar.open(message, 'OK', { duration: 5000 });
       },

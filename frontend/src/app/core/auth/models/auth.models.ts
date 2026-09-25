@@ -12,7 +12,7 @@ export interface RegisterRequest {
 }
 
 export interface CurrentUser {
-  id: string;
+  id: number;
   email: string;
   username: string;
 }

@@ -16,36 +16,35 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
-
-  # api:
-  #   build:
-  #     context: ./backend
-  #     dockerfile: Dockerfile
-  #   container_name: gymtracker_api
-  #   restart: unless-stopped
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
-  #   environment:
-  #     ASPNETCORE_ENVIRONMENT: Production
-  #     ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
-  #     JwtSettings__Secret: ${JWT_SECRET}
-  #     JwtSettings__Issuer: GymTracker
-  #     JwtSettings__Audience: GymTrackerUsers
-  #     JwtSettings__ExpiryMinutes: "60"
-  #   ports:
-  #     - "8080:8080"
-
-  # web:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   container_name: gymtracker_web
-  #   restart: unless-stopped
-  #   depends_on:
-  #     - api
-  #   ports:
-  #     - "4200:80"
-
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: gymtracker_api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+      JwtSettings__Secret: ${JWT_SECRET}
+      JwtSettings__Issuer: GymTracker
+      JwtSettings__Audience: GymTrackerUsers
+      JwtSettings__ExpiryMinutes: "60"
+      Cors__AllowedOrigin: "http://localhost:4200"
+      GoogleAuth__ClientId: "59456460904-f92mgi2mctqfrrv4t425gildr1hn0e32.apps.googleusercontent.com"
+    ports:
+      - "5129:8080"
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: gymtracker_web
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "4200:80"
 volumes:
   pgdata:

@@ -4,6 +4,7 @@ using GymTracker.Application.Contracts.Persistence;
 using GymTracker.Application.Contracts.UseCases.Auth;
 using GymTracker.Application.DTOs.Auth;
 using GymTracker.Application.DTOs.Users;
+using GymTracker.Application.Exceptions;
 using GymTracker.Domain.Models;
 using Microsoft.Extensions.Configuration;
 
@@ -30,24 +31,15 @@ public class AuthService : IAuthService
         var existingUsername = await _userRepository.GetByUsernameAsync(request.Username, cancellationToken);
 
         if (existingEmail is not null)
-            throw new InvalidOperationException("A user with this email already exists.");
+            throw new ConflictException("A user with this email already exists.");
 
         if (existingUsername is not null)
-            throw new InvalidOperationException("A user with this username already exists.");
+            throw new ConflictException("A user with this username already exists.");
 
-
-        var user = new User
-        {
-            Username = request.Username,
-            Email = request.Email,
-            PasswordHashed = BCrypt.Net.BCrypt.HashPassword(request.Password),
-            FirstName = request.FirstName,
-            LastName = request.LastName
-
-        };
-
+        var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+        var user = new User(request.Username, passwordHash, request.Email, request.FirstName, request.LastName);
         var created = await _userRepository.CreateAsync(user, cancellationToken);
-        
+ 
         var token = _tokenService.GenerateToken(created);
 
         return new LoginResponse(token);
@@ -58,7 +50,7 @@ public class AuthService : IAuthService
     {
         var user = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
         if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHashed))
-            throw new UnauthorizedAccessException("Invalid email or password.");
+            throw new UnauthorizedException("Invalid email or password.");
 
         var token = _tokenService.GenerateToken(user);
         return new LoginResponse(token);
@@ -76,24 +68,20 @@ public class AuthService : IAuthService
         }
         catch (InvalidJwtException)
         {
-            throw new UnauthorizedAccessException("Invalid Google token.");
+            throw new UnauthorizedException("Invalid Google token.");
         }
+
+        if (!payload.EmailVerified)
+            throw new UnauthorizedException("Google email is not verified.");
 
         var user = await _userRepository.GetByEmailAsync(payload.Email, cancellationToken);
 
         if (user is null)
         {
             var username = await GenerateUniqueUsernameAsync(payload.Email, cancellationToken);
+            var randomPasswordHash = BCrypt.Net.BCrypt.HashPassword(Guid.NewGuid().ToString());
 
-            user = new User
-            {
-                Username = username,
-                Email = payload.Email,
-                FirstName = payload.GivenName ?? "",
-                LastName = payload.FamilyName ?? "",
-                PasswordHashed = BCrypt.Net.BCrypt.HashPassword(Guid.NewGuid().ToString()),
-                IsGoogleAccount = true
-            };
+            user = new User(username, randomPasswordHash, payload.Email, payload.GivenName ?? "", payload.FamilyName ?? "", true);
             user = await _userRepository.CreateAsync(user, cancellationToken);
         }
 

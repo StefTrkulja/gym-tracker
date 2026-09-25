@@ -58,12 +58,12 @@ export class WorkoutList implements OnInit, AfterViewInit {
         this.dataSource.data = data;
         this.isLoading.set(false);
         console.log(data)
-        console.log("Test")
+        console.log("Test loada")
         this.dataSource.filter = this.filterControl.value ?? 'All';
       },
       error: () => {
-        console.log("Testic")
         this.isLoading.set(false);
+        console.log("Testic loada")
         this.snackBar.open('Failed to load workouts.', 'OK', { duration: 4000 });
       },
     });

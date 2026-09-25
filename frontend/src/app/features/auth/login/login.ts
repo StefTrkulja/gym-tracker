@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, inject } from '@angular/core';
+import { AfterViewInit, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -7,7 +7,6 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { MATERIAL_MODULES } from '../../../shared/material';
 declare const google: any;
 import { environment } from '../../../../env/environment';
-
 
 @Component({
   selector: 'app-login',
@@ -25,8 +24,8 @@ export class Login implements AfterViewInit {
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
 
-  isLoading = false;
-  hidePassword = true;
+  isLoading = signal(false);
+  hidePassword = signal(true);
 
   form = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -45,10 +44,10 @@ export class Login implements AfterViewInit {
   }
 
   handleGoogleLogin(response: any): void {
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.authService.loginWithGoogle(response.credential).subscribe({
       next: (success) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         if (success) {
           this.router.navigate(['/dashboard']);
         } else {
@@ -56,7 +55,7 @@ export class Login implements AfterViewInit {
         }
       },
       error: () => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.snackBar.open('Google login failed.', 'OK', { duration: 5000 });
       },
     });
@@ -69,7 +68,7 @@ export class Login implements AfterViewInit {
       return;
     }
 
-    this.isLoading = true;
+        this.isLoading.set(true);
     const value = this.form.getRawValue();
 
     this.authService.login({
@@ -77,7 +76,7 @@ export class Login implements AfterViewInit {
       password: value.password!,
     }).subscribe({
       next: (success) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         if (success) {
           this.router.navigate(['/dashboard']);
         } else {
@@ -85,7 +84,7 @@ export class Login implements AfterViewInit {
         }
       },
       error: (err) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         const message = err.error?.error ?? 'Invalid email or password.';
         this.snackBar.open(message, 'OK', { duration: 5000 });
       },
