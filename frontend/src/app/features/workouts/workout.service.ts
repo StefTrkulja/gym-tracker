@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Workout, WorkoutRequest } from './models/workout.models'
@@ -9,7 +9,7 @@ import { environment } from '../../../env/environment';
 })
 export class WorkoutService {
 
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient)
 
   getAll(): Observable<Workout[]> {
     return this.http.get<Workout[]>(environment.apiHost + "workouts");
