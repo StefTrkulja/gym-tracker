@@ -75,7 +75,6 @@ get monthSummary() {
         this.weeks.set(data.weeks);
         this.updateChart(data.weeks);
         this.isLoading.set(false);
-        console.log(data.weeks)
       },
       error: () => {
         this.isLoading.set(false);
