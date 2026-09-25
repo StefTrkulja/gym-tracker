@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, inject, OnInit, ViewChild, signal } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -19,14 +19,15 @@ const EXERCISE_TYPES: ExerciseType[] = ['Cardio', 'Strength', 'Flexibility', 'Sp
   templateUrl: './workout-list.html',
   styleUrl: './workout-list.scss',
 })
-export class WorkoutList implements OnInit, AfterViewInit {
+export class WorkoutList implements OnInit {
   private workoutsService = inject(WorkoutService);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
 
   dataSource = new MatTableDataSource<Workout>([]);
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-
+  @ViewChild(MatPaginator) set paginator(paginator: MatPaginator | undefined) {
+    this.dataSource.paginator = paginator ?? null;
+  }
   isLoading = signal<boolean>(false);
   exerciseTypes = EXERCISE_TYPES;
   filterControl = new FormControl<ExerciseType | 'All'>('All');
@@ -43,9 +44,6 @@ export class WorkoutList implements OnInit, AfterViewInit {
 
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-  }
 
   get hasWorkouts(): boolean {
     return this.dataSource.data.length > 0;
@@ -105,6 +103,6 @@ export class WorkoutList implements OnInit, AfterViewInit {
   }
 
   get hasFilteredWorkouts(): boolean {
-  return this.dataSource.filteredData.length > 0;
-}
+    return this.dataSource.filteredData.length > 0;
+  }
 }
