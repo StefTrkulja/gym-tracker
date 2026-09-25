@@ -1,0 +1,37 @@
+<nav class="sidebar">
+  <div class="brand">
+    <mat-icon>fitness_center</mat-icon>
+    <span>GymTracker</span>
+  </div>
+
+  <div class="nav-links">
+    <a routerLink="/dashboard" routerLinkActive="active">
+      <mat-icon>dashboard</mat-icon>
+      <span>Dashboard</span>
+    </a>
+    <a routerLink="/workouts" routerLinkActive="active">
+      <mat-icon>list_alt</mat-icon>
+      <span>Workouts</span>
+    </a>
+  </div>
+
+  <div class="user-section">
+    <div class="user-info">
+      <div class="avatar">
+        {{ (currentUser()?.username ?? '?').charAt(0).toUpperCase() }}
+      </div>
+      <div class="user-details">
+        <span class="username">{{ currentUser()?.username ?? 'User' }}</span>
+        <span class="email">{{ currentUser()?.email ?? '' }}</span>
+      </div>
+      <button mat-icon-button class="settings-btn" (click)="openSettings()" aria-label="Settings">
+        <mat-icon>settings</mat-icon>
+      </button>
+    </div>
+
+    <button mat-button class="logout-btn" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Log out</span>
+    </button>
+  </div>
+</nav>

@@ -3,6 +3,6 @@
 namespace GymTracker.Application.DTOs.Auth;
 
 public record LoginRequest(
-    [Required][EmailAddress] string Email,
-    [Required] string Password
+    [Required][EmailAddress][MaxLength(255)] string Email,
+    [Required][MaxLength(72)] string Password
 );

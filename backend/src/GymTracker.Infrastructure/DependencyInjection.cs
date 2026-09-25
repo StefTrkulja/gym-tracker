@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using GymTracker.Application.Contracts.Infrastructure;
 using GymTracker.Application.Contracts.Persistence;
+using GymTracker.Infrastructure.Persistence.Workouts;
 
 namespace GymTracker.Infrastructure;
 
@@ -25,6 +26,7 @@ public static class DependencyInjection
 
         //Repositories
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IWorkoutRepository, WorkoutRepository>();
         
         return services;
     }

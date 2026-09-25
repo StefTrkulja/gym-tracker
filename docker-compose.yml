@@ -11,12 +11,12 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./db/migrate.sql:/docker-entrypoint-initdb.d/migrate.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 10
-
   api:
     build:
       context: ./backend
@@ -33,9 +33,10 @@ services:
       JwtSettings__Issuer: GymTracker
       JwtSettings__Audience: GymTrackerUsers
       JwtSettings__ExpiryMinutes: "60"
+      Cors__AllowedOrigin: "http://localhost:4200"
+      GoogleAuth__ClientId: "59456460904-f92mgi2mctqfrrv4t425gildr1hn0e32.apps.googleusercontent.com"
     ports:
-      - "8080:8080"
-
+      - "5129:8080"
   web:
     build:
       context: ./frontend
@@ -46,6 +47,5 @@ services:
       - api
     ports:
       - "4200:80"
-
 volumes:
   pgdata:

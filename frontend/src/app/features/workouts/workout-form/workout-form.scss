@@ -1,0 +1,32 @@
+.full-width {
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+
+  mat-form-field {
+    flex: 1;
+  }
+}
+
+.slider-group {
+  margin-bottom: 16px;
+
+  label {
+    display: block;
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 4px;
+  }
+
+  mat-slider {
+    width: 100%;
+  }
+}
+
+mat-dialog-content {
+  min-width: 420px;
+  padding-top: 8px !important;
+}

@@ -1,0 +1,89 @@
+<div class="main-container">
+  <app-sidebar></app-sidebar>
+
+  <main class="content">
+    <div class="header">
+      <h1>Workouts</h1>
+      <button mat-raised-button color="primary" (click)="openAddDialog()">
+        <mat-icon>add</mat-icon>
+        Add Workout
+      </button>
+    </div>
+<div class="header-actions">
+  <mat-form-field appearance="outline" class="filter-field">
+    <mat-label>Filter by type</mat-label>
+    <mat-select [formControl]="filterControl">
+      <mat-option value="All">All</mat-option>
+      @for (type of exerciseTypes; track type) {
+        <mat-option [value]="type">{{ type }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+    @if (isLoading()) {
+    <p class="empty-state">Loading...</p>
+    } @else if (!hasWorkouts) {
+    <p class="empty-state">No workouts logged yet. Click "Add Workout" to get started.</p>
+    } @else if (!hasFilteredWorkouts) {
+  <p class="empty-state">No workouts match this filter.</p>}
+    @else {
+    <table mat-table [dataSource]="dataSource" class="workouts-table">
+      <ng-container matColumnDef="exerciseType">
+        <th mat-header-cell *matHeaderCellDef>Type</th>
+        <td mat-cell *matCellDef="let w">
+          <mat-chip>{{ w.exerciseType }}</mat-chip>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="performedAt">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let w">{{ w.performedAt | date:'MMM d, y, h:mm a' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="durationMinutes">
+        <th mat-header-cell *matHeaderCellDef>Duration</th>
+        <td mat-cell *matCellDef="let w">{{ w.durationMinutes }} min</td>
+      </ng-container>
+
+      <ng-container matColumnDef="caloriesBurned">
+        <th mat-header-cell *matHeaderCellDef>Calories</th>
+        <td mat-cell *matCellDef="let w">{{ w.caloriesBurned }} kcal</td>
+      </ng-container>
+
+      <ng-container matColumnDef="intensity">
+        <th mat-header-cell *matHeaderCellDef>Intensity</th>
+        <td mat-cell *matCellDef="let w">{{ w.intensity }}/10</td>
+      </ng-container>
+
+      <ng-container matColumnDef="fatigue">
+        <th mat-header-cell *matHeaderCellDef>Fatigue</th>
+        <td mat-cell *matCellDef="let w">{{ w.fatigue }}/10</td>
+      </ng-container>
+
+      <ng-container matColumnDef="notes">
+        <th mat-header-cell *matHeaderCellDef>Notes</th>
+        <td mat-cell *matCellDef="let w" class="notes-cell" [matTooltip]="w.notes || ''"
+          [matTooltipDisabled]="!w.notes">
+          {{ w.notes || '—' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let w">
+          <button mat-icon-button (click)="openEditDialog(w)" aria-label="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteWorkout(w)" aria-label="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator [pageSizeOptions]="[10, 25, 50]" [pageSize]="10" showFirstLastButtons></mat-paginator>
+    }
+  </main>
+</div>

@@ -1,0 +1,17 @@
+.full-width {
+  width: 100%;
+}
+
+.name-row {
+  display: flex;
+  gap: 16px;
+
+  mat-form-field {
+    flex: 1;
+  }
+}
+
+mat-dialog-content {
+  min-width: 400px;
+  padding-top: 8px !important;
+}
