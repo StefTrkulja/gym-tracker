@@ -1,5 +1,5 @@
 import { environment } from '../../../env/environment';
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal,inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, catchError, of, map } from 'rxjs';
 import { LoginRequest, RegisterRequest, CurrentUser} from './models/auth.models';
@@ -12,7 +12,7 @@ export class AuthService {
   isLoggedIn = signal<boolean>(false);
   currentUser = signal<CurrentUser | null>(null);
 
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient)
 
   login(request: LoginRequest): Observable<boolean> {
     return this.http.post<void>( environment.apiHost + `auth/login`, request).pipe(

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../env/environment';
@@ -8,7 +8,7 @@ import { UpdateProfileRequest,UserProfile } from './models/user.models';
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient)
 
   getProfile(): Observable<UserProfile> {
     return this.http.get<UserProfile>(`${environment.apiHost}users/me`);

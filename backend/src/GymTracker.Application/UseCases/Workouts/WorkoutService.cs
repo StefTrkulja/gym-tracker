@@ -44,7 +44,7 @@ public class WorkoutService : IWorkoutService
         if (workout is null)
             throw new NotFoundException($"Workout with id {workoutId} not found.");
 
-        if (workout.UserId != userId)
+        if (!workout.IsOwnedBy(userId))
             throw new ForbiddenException("You are not allowed to delete this workout.");
 
         await _workoutRepository.DeleteAsync(workout, cancellationToken);
