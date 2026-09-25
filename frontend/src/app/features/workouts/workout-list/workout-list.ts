@@ -55,13 +55,10 @@ export class WorkoutList implements OnInit {
       next: (data) => {
         this.dataSource.data = data;
         this.isLoading.set(false);
-        console.log(data)
-        console.log("Test loada")
         this.dataSource.filter = this.filterControl.value ?? 'All';
       },
       error: () => {
         this.isLoading.set(false);
-        console.log("Testic loada")
         this.snackBar.open('Failed to load workouts.', 'OK', { duration: 4000 });
       },
     });
